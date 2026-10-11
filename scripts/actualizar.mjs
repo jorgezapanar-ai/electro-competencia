@@ -127,13 +127,14 @@ function armar({ tienda, nombre, marca, precio, moneda, precioLista, disponible,
 // ---------- Biblioteca de adaptadores (cada fuente en config.json declara su "tipo") ----------
 
 async function leerVtex(fuente, params) {
-  const { base, categorias = [], catId, excluir = [], paginasMax = 12, paso = 49 } = params || {};
+  const { base, categorias = [], catId, catIds = [], excluir = [], paginasMax = 12, paso = 49, searchSub = '' } = params || {};
   const patronCat = categorias.length ? new RegExp('\\/(' + categorias.map(escRg).join('|') + ')\\/', 'i') : null;
+  const ids = catIds.length ? catIds : catId ? [catId] : [];
   const productos = [];
   let desde = 0;
   for (let pagina = 0; pagina < paginasMax; pagina++) {
-    const fq = catId ? `&fq=C:/${catId}/` : '';
-    const url = `${base}/api/catalog_system/pub/products/search?_from=${desde}&_to=${desde + paso}&O=OrderByPriceDESC${fq}`;
+    const fq = ids.length ? `&fq=${ids.map((seg, i) => `${i ? '&fq=' : ''}C:/${seg}/`).join('')}` : '';
+    const url = `${base}/api/catalog_system/pub/products/search${searchSub}?_from=${desde}&_to=${desde + paso}&O=OrderByPriceDESC${fq}`;
     let arr;
     try {
       arr = await pedir(url, 'json');
@@ -165,8 +166,10 @@ async function leerVtex(fuente, params) {
       });
       if (fila) productos.push(fila);
     }
-    if (arr.length < paso + 1) break;
-    desde += paso + 1;
+    // VTEX puede devolver páginas parciales antes del final (p. ej. por orden inestable);
+    // se avanza por el tamaño real recibido y se corta solo cuando una página viene vacía.
+    if (!arr.length) break;
+    desde += arr.length;
     await dormir(400);
   }
   return { productos, meta: { fuente: `${base.replace(/\/+$/, '')}/api/catalog_system/pub/products/search` } };
@@ -463,6 +466,78 @@ async function leerMagentoGrid(fuente, params) {
   };
 }
 
+// SAP Commerce (Hybris): grid del lado servidor con bloques "product-item" y un
+// JSON de producto embebido en data-product-info (name, id, price, brand, category).
+// El precio final vive en data-product-info; si el bloque trae "was-price"/old price
+// se lee el tachado. Muchos sitios Hybris exigen el parámetro "device" cuando la URL
+// lleva query; sin él, el servidor devuelve una página de redirección en vez del grid.
+async function leerHybrisGrid(fuente, params) {
+  const { base, paths = [], categoriaNombre = 'categoría', paginasMax = 3, queryPage = 'page', qBase = ':relevance', device = 'DESKTOP', moneda } = params || {};
+  const conQuery = (path, pagina) => {
+    const u = new URL(base + path);
+    if (device) u.searchParams.set('device', device);
+    if (qBase) u.searchParams.set('q', qBase);
+    u.searchParams.set(queryPage, String(pagina));
+    return u.toString();
+  };
+  const mapa = new Map();
+  const agrega = (html) => {
+    let nuevos = 0;
+    const bloques = html.split(/<div class="product-item">/gi);
+    for (let i = 1; i < bloques.length; i++) {
+      const b = bloques[i];
+      const info = (b.match(/data-product-info='([\s\S]*?)'>/) || [])[1];
+      if (!info) continue;
+      let j;
+      try { j = JSON.parse(info); } catch { continue; }
+      const enlace = (b.match(/href="([^"]+)"[^>]*>\s*(?:<img|$)/) || [])[1] || (b.match(/class="thumb[^"]*"\s*(?:id="[^"]*"\s*)?href="([^"]+)"/) || [])[1];
+      if (!enlace || mapa.has(enlace)) continue;
+      const nombre = j.name || (b.match(/title="([^"]+)"/) || [])[1];
+      const precio = j.price != null ? Number(j.price) : null;
+      if (!nombre || !(isFinite(precio) && precio > 0)) continue;
+      const tachado = (b.match(/was-price[^>]*>\s*([\d.,]+)/) || [])[1];
+      const img = (b.match(/(?:data-src|src)="(\/\/[^"]+\.(?:jpg|jpeg|png|webp))"/i) || [])[1] || null;
+      const fila = armar({
+        tienda: fuente.id,
+        nombre: String(nombre).trim(),
+        marca: j.brand || null,
+        precio,
+        moneda: moneda || COD_LOC,
+        precioLista: tachado && isFinite(Number(tachado)) && Number(tachado) > precio ? tachado : null,
+        disponible: null,
+        url: base + enlace,
+        imagen: img ? 'https:' + img : null,
+        categoria: j.category || categoriaNombre,
+      });
+      if (fila) { mapa.set(enlace, fila); nuevos++; }
+    }
+    return nuevos;
+  };
+
+  for (const path of paths) {
+    for (let p = 0; p < paginasMax; p++) {
+      const url = conQuery(path, p);
+      let html;
+      try {
+        html = await pedir(url, 'text');
+      } catch (e) {
+        if (p === 0) throw e;
+        break;
+      }
+      const nuevos = agrega(html);
+      if (nuevos === 0) break;
+      await dormir(500);
+    }
+    await dormir(300);
+  }
+  const productos = [...mapa.values()];
+  if (!productos.length) throw new Error(`Sin bloques product-item de Hybris en ${base}${paths[0] || ''}`);
+  return {
+    productos,
+    meta: { categoria: categoriaNombre, fuente: `Grid HTML (SAP Commerce / Hybris) · ${paths.map((pa) => `${base}${pa}`).join(', ')}` },
+  };
+}
+
 // Sitio sin catálogo ni API: se reporta presencia/ausencia de precios en el HTML público.
 async function leerEstatico(fuente, params) {
   const { base } = params || {};
@@ -488,6 +563,7 @@ const ADAPTADORES = {
   'prestashop-categoria': leerPrestaCategoria,
   'jsonld-categoria': leerJsonLdCategoria,
   'magento-grid': leerMagentoGrid,
+  'hybris-grid': leerHybrisGrid,
   idbi: leerIdbi,
   estatico: leerEstatico,
 };

@@ -1,0 +1,428 @@
+{
+  "comentario": "Única fuente de verdad del panel. Para replicar a otra industria: copia esta carpeta y edita este archivo. El motor (scripts/actualizar.mjs) y el panel (index.html) leen todo desde aquí: moneda, tramos, fuentes con su adaptador, políticas de envío y textos. No edites los otros archivos.",
+  "industria": "Electrodomésticos",
+  "mercado": "Lima",
+  "version": "1.0",
+  "versionFecha": "2026-10-09",
+  "tramoSegAlto": 1000,
+  "apiFx": "https://open.er-api.com/v6/latest/",
+  "empresa": {
+    "nombre": "Nuestra tienda",
+    "rol": "Nuestra tienda",
+    "url": "",
+    "logoDataUri": ""
+  },
+  "tiendaPropiaId": "ninguna",
+  "monedaLocal": {
+    "codigo": "PEN",
+    "simbolo": "S/",
+    "nombre": "soles",
+    "locale": "es-PE",
+    "zona": "America/Lima"
+  },
+  "monedaExtranjera": {
+    "codigo": "USD",
+    "simbolo": "US$",
+    "nombre": "dólares",
+    "nombreUnidad": "dólar"
+  },
+  "tramos": [
+    { "id": "0-100", "etq": "< S/ 100", "min": 0, "max": 100, "color": "#6b4a2b" },
+    { "id": "100-300", "etq": "S/ 100–299", "min": 100, "max": 300, "color": "#7a5c38" },
+    { "id": "300-1000", "etq": "S/ 300–999", "min": 300, "max": 1000, "color": "#5c564c" },
+    { "id": "1000-3000", "etq": "S/ 1,000–2,999", "min": 1000, "max": 3000, "color": "#3f3b34" },
+    { "id": "3000-max", "etq": "S/ 3,000 o más", "min": 3000, "max": null, "color": "#1d1d1b" }
+  ],
+  "fuentes": [
+    {
+      "id": "hiraoka",
+      "nombre": "Hiraoka",
+      "rol": "competencia",
+      "url": "https://hiraoka.com.pe/",
+      "plataforma": "Magento · grid por JS (pendiente adaptador Ajax)",
+      "tipo": "estatico",
+      "segmento": "Electrohogar (refrigeración, lavado, cocina)",
+      "params": {
+        "base": "https://hiraoka.com.pe",
+        "categoriaNombre": "Electrodomésticos"
+      }
+    },
+    {
+      "id": "lacuracao",
+      "nombre": "La Curacao",
+      "rol": "competencia",
+      "url": "https://www.lacuracao.pe/",
+      "plataforma": "Magento · mismo catálogo y template que EFE (verificado)",
+      "tipo": "magento-grid",
+      "segmento": "Electrohogar completo publicado",
+      "params": {
+        "base": "https://www.lacuracao.pe",
+        "paginasMax": 8,
+        "paths": [
+          "/electrohogar/lavado.html",
+          "/electrohogar/refrigeracion.html",
+          "/electrohogar/cocina.html",
+          "/electrohogar/limpieza.html",
+          "/electrohogar/electrodomesticos.html",
+          "/electrohogar/climatizacion.html",
+          "/electrohogar/cuidado-personal.html"
+        ],
+        "categoriaNombre": "Electrodomésticos",
+        "moneda": "PEN"
+      }
+    },
+    {
+      "id": "falabella",
+      "nombre": "Falabella",
+      "rol": "competencia",
+      "url": "https://www.falabella.com.pe/",
+      "plataforma": "Web propia (SSR) · pendiente adaptador",
+      "tipo": "estatico",
+      "segmento": "Línea electro",
+      "params": {
+        "base": "https://www.falabella.com.pe",
+        "categoriaNombre": "Electrodomésticos"
+      }
+    },
+    {
+      "id": "ripley",
+      "nombre": "Ripley",
+      "rol": "competencia",
+      "url": "https://www.ripley.com.pe/",
+      "plataforma": "Protegida · HTTP 403 a bots",
+      "tipo": "estatico",
+      "segmento": "Electrodomésticos y tecnología",
+      "params": {
+        "base": "https://www.ripley.com.pe",
+        "categoriaNombre": "Electrodomésticos"
+      }
+    },
+    {
+      "id": "sodimac",
+      "nombre": "Sodimac",
+      "rol": "competencia",
+      "url": "https://www.sodimac.com.pe/",
+      "plataforma": "Web propia (SSR) · pendiente adaptador",
+      "tipo": "estatico",
+      "segmento": "Electro hogar y herramientas",
+      "params": {
+        "base": "https://www.sodimac.com.pe",
+        "categoriaNombre": "Electrodomésticos"
+      }
+    },
+    {
+      "id": "promart",
+      "nombre": "Promart",
+      "rol": "competencia",
+      "url": "https://www.promart.pe/",
+      "plataforma": "VTEX · API search pública",
+      "tipo": "vtex",
+      "segmento": "Electrohogar completo publicado",
+      "params": {
+        "base": "https://www.promart.pe",
+        "catId": 599,
+        "categorias": ["electrohogar"],
+        "paginasMax": 60,
+        "moneda": "PEN"
+      }
+    },
+    {
+      "id": "oechsle",
+      "nombre": "Oechsle",
+      "rol": "competencia",
+      "url": "https://www.oechsle.pe/",
+      "plataforma": "VTEX · API search pública",
+      "tipo": "vtex",
+      "segmento": "Electrohogar (excluye herramientas eléctricas)",
+      "params": {
+        "base": "https://www.oechsle.pe",
+        "catId": 161,
+        "categorias": ["electrohogar"],
+        "excluir": ["herramientas"],
+        "paginasMax": 60,
+        "moneda": "PEN"
+      }
+    },
+    {
+      "id": "efe",
+      "nombre": "Efe",
+      "rol": "competencia",
+      "url": "https://www.efe.com.pe/",
+      "plataforma": "Magento · categorías en HTML servido por el servidor",
+      "tipo": "magento-grid",
+      "segmento": "Electrohogar completo publicado",
+      "params": {
+        "base": "https://www.efe.com.pe",
+        "paginasMax": 8,
+        "paths": [
+          "/electrohogar/lavado.html",
+          "/electrohogar/refrigeracion.html",
+          "/electrohogar/cocina.html",
+          "/electrohogar/limpieza.html",
+          "/electrohogar/electrodomesticos.html",
+          "/electrohogar/climatizacion.html",
+          "/electrohogar/cuidado-personal.html"
+        ],
+        "categoriaNombre": "Electrodomésticos",
+        "moneda": "PEN"
+      }
+    },
+    {
+      "id": "marcimex",
+      "nombre": "Marcimex",
+      "rol": "competencia",
+      "url": "https://www.marcimex.com/",
+      "plataforma": "VTEX · API search pública",
+      "tipo": "vtex",
+      "segmento": "Electrodomésticos (rama hogar y electro)",
+      "params": {
+        "base": "https://www.marcimex.com",
+        "catId": 2,
+        "paginasMax": 60,
+        "moneda": "PEN"
+      }
+    }
+  ],
+  "envios": [
+    { "tienda": "hiraoka", "nombre": "Hiraoka", "costoLima": "No observado", "gratisDesde": "No observado", "tiempo": "No observado", "fuente": "https://hiraoka.com.pe/", "cita": "", "observadoEn": null },
+    { "tienda": "lacuracao", "nombre": "La Curacao", "costoLima": "No observado", "gratisDesde": "No observado", "tiempo": "No observado", "fuente": "https://www.lacuracao.pe/", "cita": "", "observadoEn": null },
+    { "tienda": "falabella", "nombre": "Falabella", "costoLima": "No observado", "gratisDesde": "No observado", "tiempo": "No observado", "fuente": "https://www.falabella.com.pe/", "cita": "", "observadoEn": null },
+    { "tienda": "ripley", "nombre": "Ripley", "costoLima": "No observado", "gratisDesde": "No observado", "tiempo": "No observado", "fuente": "https://www.ripley.com.pe/", "cita": "", "observadoEn": null },
+    { "tienda": "sodimac", "nombre": "Sodimac", "costoLima": "No observado", "gratisDesde": "No observado", "tiempo": "No observado", "fuente": "https://www.sodimac.com.pe/", "cita": "", "observadoEn": null },
+    { "tienda": "promart", "nombre": "Promart", "costoLima": "No observado", "gratisDesde": "No observado", "tiempo": "No observado", "fuente": "https://www.promart.pe/", "cita": "", "observadoEn": null },
+    { "tienda": "oechsle", "nombre": "Oechsle", "costoLima": "No observado", "gratisDesde": "No observado", "tiempo": "No observado", "fuente": "https://www.oechsle.pe/", "cita": "", "observadoEn": null },
+    { "tienda": "efe", "nombre": "Efe", "costoLima": "No observado", "gratisDesde": "No observado", "tiempo": "No observado", "fuente": "https://www.efe.com.pe/", "cita": "", "observadoEn": null },
+    { "tienda": "marcimex", "nombre": "Marcimex", "costoLima": "No observado", "gratisDesde": "No observado", "tiempo": "No observado", "fuente": "https://www.marcimex.com/", "cita": "", "observadoEn": null }
+  ],
+  "exportacion": {
+    "csvBase": "electro-competencia-",
+    "csvColumnas": [
+      "Tienda",
+      "Producto",
+      "Marca",
+      "Precio {CODIGO_LOCAL}",
+      "Publicado",
+      "Precio anterior {CODIGO_LOCAL}",
+      "Disponible",
+      "Segmento",
+      "URL",
+      "Lectura"
+    ]
+  },
+  "textos": {
+    "tituloPagina": "Precios de competencia · Electrodomésticos Lima · Media Lab",
+    "cintaDemo": "DATOS PÚBLICOS DE LAS TIENDAS · LECTURA DIARIA AUTOMÁTICA · SOLO PARA USO INTERNO",
+    "principal": {
+      "eyebrow": "Competencia · Electrodomésticos · Lima",
+      "h1": "¿A qué precios está vendiendo <em>la competencia</em>?",
+      "intro": "Panel con los productos y precios que cada tienda publica hoy en su web, con la política de envío en {mercado}. La lectura es automática: cada día se vuelve a consultar cada sitio y aquí aparece lo que sus páginas muestran. No se captura a mano, no se estima ni se completa con información de terceros."
+    },
+    "secciones": {
+      "kpis": {
+        "eyebrow": "Puntos principales a comparar",
+        "h": "El corte de hoy en seis cifras"
+      },
+      "rangos": {
+        "eyebrow": "Nivel de precios",
+        "h": "Rango de precio por tienda",
+        "desc": "Barra: precio mínimo al máximo publicado. La línea roja marca la mediana. El eje se limita al percentil 95 del conjunto para que los equipos excepcionales no aplasten la escala; los valores por encima se marcan con ▶."
+      },
+      "tramos": {
+        "eyebrow": "Estructura del catálogo",
+        "h": "Distribución por tramos de precio",
+        "desc": "Participación de cada tramo dentro del catálogo leído de cada tienda. Permite ver dónde compite cada una: volumen de entrada vs. segmento alto.",
+        "nota": "Tramos propuestos para este panel (no son una categoría oficial de las tiendas): {tramos}.",
+        "unidad": "productos"
+      },
+      "envios": {
+        "eyebrow": "Logística",
+        "h": "Envío y entrega en {mercado}",
+        "desc": "Campos transcritos de la política pública de cada tienda (enlace en la columna Fuente) y revalidados en cada lectura diaria: si la página deja de responder o su contenido cambia, se marca en la tabla.",
+        "caption": "Comparativo de políticas de envío en {mercado} por tienda",
+        "colTienda": "Tienda",
+        "colCosto": "Costo en {mercado}",
+        "colGratis": "Envío gratis desde",
+        "colTiempo": "Tiempo de entrega",
+        "colFuente": "Fuente (verificada hoy)",
+        "badgeOk": "OK",
+        "badgeCambio": "Contenido cambió · revisar",
+        "badgeCaida": "Fuente caída",
+        "nota": "Cita textual y campos observados el {fecha}; el enlace se revalida en cada lectura diaria.",
+        "notaCaidas": "{n} fuente(s) de política no respondieron hoy: se muestra el último texto observado.",
+        "notaCambios": "{n} política(s) cambió su contenido respecto a la primera lectura: revisar manualmente antes de citar."
+      },
+      "catalogo": {
+        "eyebrow": "Detalle",
+        "h": "Catálogo comparado",
+        "desc": "Cada fila es un producto tal como lo publica su tienda, con el enlace a la ficha de origen para verificarlo. \u201cPrecio ({CODIGO_LOCAL})\u201d expresa todo en {monedaLocal} (con la tasa del día cuando la tienda publica en otra moneda); \u201cPublicado\u201d es el precio en la moneda original de la web y \u201cPrecio anterior\u201d el precio tachado que la tienda muestra como oferta.",
+        "caption": "Catálogo de productos y precios de las tiendas analizadas",
+        "buscarLabel": "Buscar producto o marca",
+        "buscarPlaceholder": "Ej. refrigeradora, lavadora, Samsung…",
+        "tiendaLabel": "Tienda",
+        "tiendaTodas": "Todas las tiendas",
+        "tramoLabel": "Tramo de precio",
+        "tramoTodas": "Todos",
+        "ordenLabel": "Ordenar por",
+        "ordenPrecioDesc": "Precio: mayor a menor",
+        "ordenPrecioAsc": "Precio: menor a mayor",
+        "ordenTienda": "Tienda (A–Z)",
+        "ordenNombre": "Nombre (A–Z)",
+        "soloDisponibles": "Solo disponibles",
+        "colTienda": "Tienda",
+        "colProducto": "Producto",
+        "colPrecio": "Precio ({CODIGO_LOCAL})",
+        "colPublicado": "Publicado",
+        "colPrecioAnterior": "Precio anterior",
+        "colEstado": "Estado",
+        "colFuente": "Fuente",
+        "buscarMas": "Cargar más",
+        "descargarCsv": "Descargar CSV",
+        "disponible": "Disponible",
+        "agotado": "Agotado",
+        "noPublicado": "No publicado",
+        "verFicha": "Ver ficha",
+        "publicadoEn": "publicado en {ext}",
+        "sinCoincidencias": "Ningún producto coincide con los filtros.",
+        "limpiarFiltros": "Limpiar filtros",
+        "conteoVacio": "0 productos coinciden (de {n} leídos)",
+        "conteo": "Mostrando {a} de {b} productos (de {n} leídos)"
+      },
+      "lecturas": {
+        "eyebrow": "Interpretación",
+        "h": "Lecturas del corte actual",
+        "calc": "Cálculo propio sobre datos observados · lectura {fecha}",
+        "sinBase": "Sin base para comparar",
+        "sinBaseTexto": "No hay suficientes precios en la lectura de hoy para calcular la diferencia.",
+        "nuestraMedianaArriba": "Nuestra mediana está {dif}% arriba del resto de tiendas",
+        "nuestraMedianaAbajo": "Nuestra mediana está {dif}% abajo del resto de tiendas",
+        "medianaTexto": "{propia} publica su catálogo con mediana {medPropia} frente a {medResto} del resto de tiendas combinadas ({n} productos). La comparación usa precios publicados; no empareja modelos ni SKUs idénticos.",
+        "masTachado": "{tienda} es la que más marca precio tachado",
+        "sinTachado": "Casi ningún catálogo marca precio tachado",
+        "tachadoTexto": "{tienda} publica precio anterior en el {pct}% de sus productos ({a} de {b}). En total, {total} de {n} productos muestran oferta declarada. Un precio tachado es una afirmación de la tienda, no una verificación del ahorro real.",
+        "tachadoTextoNo": "Ninguna tienda muestra precio anterior publicado en la lectura de hoy.",
+        "segmentoAlto": "Segmento de {etq}: {n} productos",
+        "segmentoAltoTexto": "Concentración por tienda: {tiendas}. {propia} aporta {n} de ellos. Cifras de conteo sobre precios observados, sin ajuste por marca, modelo ni eficiencia.",
+        "segmentoAltoTextoNo": "Ningún producto de la lectura llega a {etq}.",
+        "envioTitulo": "Envío: {n} de {m} declaran envío gratis",
+        "envioTexto": "{gratis}. {n} tienda(s) no publican el costo en {mercado} ({sinCosto}), por lo que ese punto no es comparable hasta que se cotice en su checkout.",
+        "extTitulo": "{n} precios llegan en {ext}",
+        "extTexto": "{tiendas} publican en {ext}; esos {n} precios se convierten a {loc} con tasa {tasa} ({fuente}, obtenida el {fecha}). El precio publicado en su web queda visible en la columna \u201cPublicado\u201d. El tipo de cambio varía: una conversión es una estimación del panel, no un precio de la tienda.",
+        "extTextoActualizado": "Este corte no incluyó precios en {ext}; la tasa de referencia quedó en {tasa} ({fuente}).",
+        "extTextoNunca": "Este corte no incluyó precios en {ext}."
+      }
+    },
+    "chips": {
+      "ultimaLectura": "Última lectura",
+      "productos": "Productos con precio",
+      "fuentes": "Fuentes leídas",
+      "enOferta": "En oferta (precio publicado tachado)",
+      "convertidos": "Convertidos de {ext}",
+      "sinConversion": "Sin conversión"
+    },
+    "kpis": {
+      "productos": {
+        "l": "Productos con precio",
+        "n": "Catálogo leído en {n} tiendas · lectura del {fecha}"
+      },
+      "mediana": {
+        "l": "Mediana de precios",
+        "n": "Valor que deja la mitad del catálogo por debajo. Cálculo propio; incluye {n} precios convertidos desde {ext} (estimación con la tasa del día)."
+      },
+      "rango": {
+        "l": "Rango mínimo – máximo",
+        "n": "Extremos de todo el catálogo leído, incluye packs y kits publicados por pedido."
+      },
+      "tachado": {
+        "l": "Con precio publicado tachado",
+        "n": "Producto con precio anterior visible en la web (oferta declarada por la tienda)."
+      },
+      "fuentes": {
+        "l": "Fuentes leídas hoy",
+        "n": "Catálogo leído en {a} de {b} tiendas; {c} sin catálogo de precios publicado. Si una web falla, se conserva su última lectura buena y se marca como error."
+      },
+      "envio": {
+        "l": "Envío gratis publicado",
+        "n": "Tiendas que declaran un monto mínimo o envío incluido en su política (ver tabla de envíos)."
+      }
+    },
+    "rangos": {
+      "nota": "Eje limitado al percentil 95 del catálogo: {tope}. La marca ▶ indica que el precio máximo de esa tienda supera el tope del eje.",
+      "mediana": "mediana",
+      "minText": "mín",
+      "maxText": "máx"
+    },
+    "footer": {
+      "marca": "Media Lab · Panel interno de precios de competencia en electrodomésticos.",
+      "texto": "Los precios, promociones y disponibilidad son los que cada tienda publica en su web al momento de la lectura y pueden cambiar sin aviso: verifique la ficha de origen antes de citar una cifra. Las diferencias entre tiendas no implican que se trate del mismo modelo, marca o fecha. Los tramos de precio, las medianas y los porcentajes de este panel son cálculos sobre los datos observados, no información publicada por las tiendas. Uso interno; requiere aprobación antes de compartirse fuera del equipo.",
+      "boton": "Ver metodología, fuentes y limitaciones"
+    },
+    "dialogo": {
+      "eyebrow": "Trazabilidad",
+      "h": "Metodología y fuentes",
+      "leido": "Lectura automática del {fecha} (hora de {zona}), duración {s} s. Cada fuente se consulta por su API pública (VTEX), por su grid HTML (Magento) o por el marcado estructurado (JSON-LD) de su página de categoría.",
+      "fxNueva": "Tipo de cambio aplicado: <b>1 {ext} = {tasa} {loc}</b>, fuente {fuente}, obtenido el {fecha}. Se usa para las tiendas que publican en {ext} ({tiendas}); el precio original en {ext} permanece en la tabla.",
+      "fxAnterior": "Sin tipo de cambio nuevo ({advertencia}). Se mantiene la última tasa conocida: 1 {ext} = {tasa} {loc}.",
+      "fxNinguna": "No hay tipo de cambio disponible ({advertencia}); los precios en {ext} quedan sin convertir y se excluyen de los cálculos en {loc}.",
+      "obs": "Observado:",
+      "obsTexto": "nombre, precio, precio tachado, disponibilidad, URL e imagen tal como aparecen en la página pública de cada tienda, y los textos de la política de envío (con su enlace).",
+      "calc": "Cálculo propio del panel:",
+      "calcTexto": "medianas, rangos, tramos, participaciones y diferencias porcentuales. Están derivados de los precios observados en la lectura y no son información publicada por las tiendas.",
+      "noHace": "No se hace:",
+      "noHaceTexto": "predicción, benchmarks externos, ajuste por marca, modelo, eficiencia ni equivalencias entre productos de marcas o specs distintas.",
+      "limitaciones": [
+        "Los precios se leen del marcado estructurado (schema.org JSON-LD), de la API pública de catálogo (VTEX) o del grid HTML servido por el servidor (Magento) de cada tienda; las webs que no exponen el catálogo por estos medios se reportan como “sin catálogo de precios”, sin inventar datos.",
+        "Verificación de plataforma hecha el 07-10-2026: Promart, Oechsle y Marcimex son VTEX (API search); Efe y La Curacao son Magento y comparten el mismo catálogo y template (conteos idénticos en las categorías comparadas), por lo que sus cifras pueden duplicarse entre sí; Hiraoka es Magento pero su grid carga por JavaScript (pendiente adaptador Ajax); Ripley responde HTTP 403 a clientes automatizados; Falabella y Sodimac montan su catálogo sobre una web propia (SSR) que aún no tiene adaptador.",
+        "Las comparaciones son a nivel de catálogo, no de modelo contra modelo: dos tiendas pueden listar el mismo producto con diferencias de garantía, entrega, instalación o accesorios que este panel no captura.",
+        "Las lecturas son instantáneos diarios: precio, stock y promociones pueden cambiar varias veces al día en la web de origen.",
+        "La política de envío se transcribe de una página pública y solo se revalida su disponibilidad; no se cotiza el checkout, donde algunas tiendas calculan el costo final según distrito, peso o dimensión.",
+        "No se hace predicción ni benchmarks externos; las comparaciones entre tiendas no implican equivalencia de producto. La rama “Electrohogar” de Oechsle incluye herramientas eléctricas: se excluyeron del conteo por segmento declarado.",
+        "Esta primera versión del panel de electrodomésticos se está construyendo: las limitaciones específicas por tienda se completan tras las primeras lecturas observadas."
+      ],
+      "cerrar": "Cerrar"
+    },
+    "chat": {
+      "eyebrow": "Consulta asistida",
+      "titulo": "Pregúntale a los datos",
+      "boton": "Consultar",
+      "abrir": "Abrir consultas",
+      "cerrar": "Cerrar",
+      "desc": "Escribe una pregunta en lenguaje natural y el panel la responde calculando sobre la última lectura de precios. Las respuestas son inmediatas y trazables: indican la fuente, el periodo y la fecha de extracción.",
+      "intro": "Se calcula sobre los {n} productos leídos el {fecha}. Sin proyecciones ni datos externos.",
+      "placeholder": "Ej.: ¿cuál es la lavadora más barata y en qué tienda?",
+      "enviar": "Consultar",
+      "ayudaTitulo": "Puedo responder, por ejemplo:",
+      "sinResultado": "No encontré productos que coincidan con esa consulta.",
+      "etiquetaUsuario": "Tú",
+      "etiquetaAsistente": "Panel",
+      "citaPrefijo": "Fuente",
+      "aviso": "Respuestas calculadas sobre data.json (lectura del {fecha}). Son datos observados de las webs de las tiendas; no son proyecciones ni benchmarks externos.",
+      "entidad": { "singular": "producto", "plural": "productos" },
+      "colTienda": "Tienda",
+      "colProducto": "Producto",
+      "ejemplos": [
+        "¿Cuál es el producto más barato y en qué tienda?",
+        "Compara la mediana de precio entre La Curacao, Promart y Oechsle",
+        "Top 10 de los productos más caros",
+        "¿Cuántos productos de Samsung hay por tienda?",
+        "¿Qué productos de LG tienen precio anterior publicado?",
+        "Precio promedio de Samsung en cada tienda",
+        "¿Cuántos productos hay entre 1,000 y 2,000 soles?"
+      ],
+      "iaSummary": "Modo IA (opcional)",
+      "iaAyuda": "Opcional: conecta el panel a un modelo de lenguaje mediante un proxy propio. La clave de API vive en el proxy (por ejemplo, un Cloudflare Worker), nunca en este panel. Si no configuras un proxy, el motor local responde sin conexión externa.",
+      "iaEndpointLabel": "URL del proxy IA",
+      "iaEndpointPlaceholder": "https://tu-proxy.ejemplo.workers.dev",
+      "iaActivar": "Usar IA externa (proxy)",
+      "iaGuardar": "Guardar",
+      "iaActivo": "IA externa activa.",
+      "iaInactivo": "Motor local (sin conexión externa).",
+      "iaError": "No pude consultar la IA externa; respondo con el motor local.",
+      "iaCita": "IA externa (proxy)"
+    },
+    "errores": {
+      "noLeido": "No se pudo leer data.json. {msg}. Abre el panel por un servidor web local o vuelve a intentarlo.",
+      "sinDatos": "El archivo data.json aún no existe o no es accesible. Se genera con {comando}.",
+      "reintentar": "Reintentar"
+    }
+  }
+}
